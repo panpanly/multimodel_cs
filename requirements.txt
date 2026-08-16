@@ -1,0 +1,33 @@
+# Web框架与ASGI服务器
+fastapi>=0.100.0,<1.0.0
+uvicorn[standard]>=0.22.0
+
+# 前端演示
+gradio>=4.0.0
+
+# HTTP请求（ASR、前端调用API）
+requests>=2.28.0
+
+# OpenAI兼容客户端（LLM和VLM）
+openai>=1.0.0
+
+# 语音合成（Edge TTS）
+edge-tts>=6.0.0
+
+# 图像检测（YOLO，保留备用）
+ultralytics>=8.0.0
+
+# RAG知识库
+chromadb>=0.4.0
+sentence-transformers>=2.2.0
+
+# 图像处理
+numpy>=1.24.0
+opencv-python-headless>=4.8.0
+Pillow>=9.0.0
+
+# 音频处理（Gradio语音输入）
+soundfile>=0.12.0
+
+# 环境变量管理
+python-dotenv>=1.0.0

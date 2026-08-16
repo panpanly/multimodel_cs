@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多模态智能客服</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .chat-container {
+            max-width: 480px;
+            margin: 20px auto;
+            background: #fff;
+            height: calc(100vh - 40px);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            position: absolute;
+            right: 16px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-header {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-header:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            background: #f5f5f5;
+            overflow-x: hidden;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: #e0e0e0;
+            border-radius: 2px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #b0b0b0;
+            border-radius: 2px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: #909090;
+        }
+
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+            max-width: 100%;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message.assistant {
+            justify-content: flex-start;
+        }
+
+        .message-bubble {
+            max-width: 75%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            line-height: 1.5;
+            font-size: 15px;
+            word-break: break-word;
+        }
+
+        .user .message-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border-bottom-right-radius: 6px;
+        }
+
+        .assistant .message-bubble {
+            background: #fff;
+            color: #333;
+            border-bottom-left-radius: 6px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .message-image {
+            max-width: 75%;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .message-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .user .message-image {
+            border-bottom-right-radius: 6px;
+        }
+
+        .assistant .message-image {
+            border-bottom-left-radius: 6px;
+        }
+
+        .chat-input {
+            padding: 12px 16px;
+            background: #fff;
+            border-top: 1px solid #eee;
+            position: relative;
+        }
+
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            background: #f5f5f5;
+            border-radius: 24px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .input-field:focus {
+            background: #eee;
+        }
+
+        .btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .btn-secondary:hover {
+            background: #eee;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .voice-recording {
+            animation: pulse 1.5s infinite;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%) !important;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 0 0 10px rgba(255, 107, 107, 0);
+            }
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #999;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 80%, 100% { opacity: 0.4; }
+            40% { opacity: 1; }
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px;
+            width: 80%;
+            max-width: 320px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .modal-message {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-modal {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-modal.cancel {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .btn-modal.cancel:hover {
+            background: #eee;
+        }
+
+        .btn-modal.confirm {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+            color: #fff;
+        }
+
+        .btn-modal.confirm:hover {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="avatar">🤖</div>
+            <div class="header-title">多模态智能客服</div>
+            <div class="header-actions">
+                <button class="btn-header" id="btn-clear" title="清除对话">🗑️</button>
+            </div>
+        </div>
+
+        <div class="chat-messages" id="messages">
+            <div class="message assistant">
+                <div class="message-bubble">
+                    您好！我是多模态智能客服，请问有什么可以帮助您的？
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input">
+            <div class="input-row">
+                <button class="btn btn-secondary" id="btn-image" title="上传图片">📷</button>
+                <button class="btn btn-secondary" id="btn-voice" title="语音输入">🎤</button>
+                <label style="display: flex; align-items: center; gap: 8px; padding: 4px 0;">
+                    <input type="checkbox" id="rag-switch" style="width: 18px; height: 18px; cursor: pointer;">
+                    <span style="font-size: 12px; color: #666;">知识库</span>
+                </label>
+                <input type="text" class="input-field" id="input-text" placeholder="输入消息...">
+                <button class="btn btn-primary" id="btn-send">➤</button>
+            </div>
+        </div>
+
+        <input type="file" id="file-input" accept="image/*" style="display: none;">
+    </div>
+
+    <div class="modal-overlay" id="confirm-modal">
+        <div class="modal">
+            <div class="modal-title">确认清除</div>
+            <div class="modal-message">确定要清除当前对话历史吗？此操作无法撤销。</div>
+            <div class="modal-actions">
+                <button class="btn-modal cancel" id="btn-cancel">取消</button>
+                <button class="btn-modal confirm" id="btn-confirm">确认清除</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000';
+
+        const messagesContainer = document.getElementById('messages');
+        const inputText = document.getElementById('input-text');
+        const btnSend = document.getElementById('btn-send');
+        const btnImage = document.getElementById('btn-image');
+        const btnVoice = document.getElementById('btn-voice');
+        const btnClear = document.getElementById('btn-clear');
+        const fileInput = document.getElementById('file-input');
+        const confirmModal = document.getElementById('confirm-modal');
+        const btnCancel = document.getElementById('btn-cancel');
+        const btnConfirm = document.getElementById('btn-confirm');
+
+        let isRecording = false;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let audioStream = null;
+
+        let sessionId = localStorage.getItem('chat_session_id');
+
+        function getSessionId() {
+            if (!sessionId) {
+                sessionId = generateUUID();
+                localStorage.setItem('chat_session_id', sessionId);
+            }
+            return sessionId;
+        }
+
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        function clearSession() {
+            sessionId = null;
+            localStorage.removeItem('chat_session_id');
+            messagesContainer.innerHTML = `
+                <div class="message assistant">
+                    <div class="message-bubble">
+                        您好！我是多模态智能客服，请问有什么可以帮助您的？
+                    </div>
+                </div>
+            `;
+        }
+
+        async function loadSessionHistory() {
+            const savedSessionId = localStorage.getItem('chat_session_id');
+            if (!savedSessionId) {
+                return;
+            }
+            
+            try {
+                const url = `${API_BASE}/api/session/history?session_id=${encodeURIComponent(savedSessionId)}`;
+                const response = await fetch(url);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.history && data.history.length > 0) {
+                        // 清空默认消息
+                        messagesContainer.innerHTML = '';
+                        
+                        // 加载历史消息
+                        data.history.forEach(msg => {
+                            const isUser = msg.role === 'user';
+                            addMessage(msg.content, isUser);
+                        });
+                        
+                        sessionId = savedSessionId;
+                    }
+                }
+            } catch (error) {
+                console.error('加载会话历史失败:', error);
+            }
+        }
+
+        function addMessage(content, isUser, isImage = false, imageSrc = '') {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'assistant'}`;
+
+            if (isImage && imageSrc) {
+                const imageContainer = document.createElement('div');
+                imageContainer.className = 'message-image';
+
+                const img = document.createElement('img');
+                img.src = imageSrc;
+                img.alt = '上传的图片';
+
+                imageContainer.appendChild(img);
+                messageDiv.appendChild(imageContainer);
+            } else {
+                const bubble = document.createElement('div');
+                bubble.className = 'message-bubble';
+                bubble.innerHTML = content.replace(/\n/g, '<br>');
+                messageDiv.appendChild(bubble);
+            }
+
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function addTypingIndicator() {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message assistant';
+            messageDiv.id = 'typing-indicator';
+
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble typing-indicator';
+
+            for (let i = 0; i < 3; i++) {
+                const dot = document.createElement('span');
+                dot.className = 'typing-dot';
+                bubble.appendChild(dot);
+            }
+
+            messageDiv.appendChild(bubble);
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) {
+                indicator.remove();
+            }
+        }
+
+        async function convertWebmToWav(webmBlob) {
+            return new Promise((resolve, reject) => {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const reader = new FileReader();
+                
+                reader.onload = async () => {
+                    try {
+                        const arrayBuffer = reader.result;
+                        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                        
+                        // 转换为WAV格式
+                        const wavBuffer = audioBufferToWav(audioBuffer);
+                        const wavBlob = new Blob([wavBuffer], { type: 'audio/wav' });
+                        
+                        audioContext.close();
+                        resolve(wavBlob);
+                    } catch (error) {
+                        audioContext.close();
+                        console.error('Audio conversion error:', error);
+                        // 如果转换失败，返回原始webm
+                        resolve(webmBlob);
+                    }
+                };
+                
+                reader.onerror = () => {
+                    console.error('FileReader error');
+                    resolve(webmBlob);
+                };
+                
+                reader.readAsArrayBuffer(webmBlob);
+            });
+        }
+
+        function audioBufferToWav(audioBuffer) {
+            const sampleRate = audioBuffer.sampleRate;
+            const numberOfChannels = audioBuffer.numberOfChannels;
+            const length = audioBuffer.length * numberOfChannels * 2 + 44;
+            const buffer = new ArrayBuffer(length);
+            const view = new DataView(buffer);
+            const channels = [];
+            let offset = 0;
+            let pos = 0;
+
+            // WAV header
+            const setUint16 = (data) => {
+                view.setUint16(pos, data, true);
+                pos += 2;
+            };
+            const setUint32 = (data) => {
+                view.setUint32(pos, data, true);
+                pos += 4;
+            };
+
+            // RIFF identifier
+            setUint32(0x46464952);
+            // file length
+            setUint32(length - 8);
+            // WAVE identifier
+            setUint32(0x45564157);
+            // fmt sub-chunk
+            setUint32(0x20746d66);
+            // sub-chunk size
+            setUint32(16);
+            // sample format (1 is PCM)
+            setUint16(1);
+            // number of channels
+            setUint16(numberOfChannels);
+            // sample rate
+            setUint32(sampleRate);
+            // byte rate (sample rate * block align)
+            setUint32(sampleRate * 2 * numberOfChannels);
+            // block align (number of channels * bytes per sample)
+            setUint16(numberOfChannels * 2);
+            // bits per sample
+            setUint16(16);
+            // data sub-chunk
+            setUint32(0x61746164);
+            // sub-chunk size
+            setUint32(length - pos - 4);
+
+            // Write audio data
+            for (let i = 0; i < numberOfChannels; i++) {
+                channels.push(audioBuffer.getChannelData(i));
+            }
+
+            while (pos < length) {
+                for (let i = 0; i < numberOfChannels; i++) {
+                    let sample = Math.max(-1, Math.min(1, channels[i][offset]));
+                    sample = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
+                    view.setInt16(pos, sample, true);
+                    pos += 2;
+                }
+                offset++;
+            }
+
+            return buffer;
+        }
+
+        async function sendRequest(url, method, body, headers = {}) {
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: headers,
+                    body: body
+                });
+
+                if (!response.ok) {
+                    console.error(`HTTP Error: ${response.status}`);
+                    const errorText = await response.text();
+                    console.error('Error Response:', errorText);
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error('Request Error:', error);
+                throw error;
+            }
+        }
+
+        async function sendTextMessage(text, useRag = false) {
+            try {
+                const headers = {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                };
+                const body = `text=${encodeURIComponent(text)}&session_id=${encodeURIComponent(getSessionId())}&use_rag=${useRag}`;
+
+                const result = await sendRequest(`${API_BASE}/api/chat/text`, 'POST', body, headers);
+                
+                if (result.session_id) {
+                    sessionId = result.session_id;
+                    localStorage.setItem('chat_session_id', sessionId);
+                }
+                
+                return result;
+            } catch (error) {
+                console.error('Text message error:', error);
+                return { reply: '抱歉，服务暂时不可用，请稍后重试。', intent: '' };
+            }
+        }
+
+        async function sendImageMessage(imageFile, text = '') {
+            try {
+                const formData = new FormData();
+                formData.append('image', imageFile);
+                if (text) {
+                    formData.append('text', text);
+                }
+                formData.append('session_id', getSessionId());
+
+                const result = await sendRequest(`${API_BASE}/api/chat/image`, 'POST', formData);
+                
+                if (result.session_id) {
+                    sessionId = result.session_id;
+                    localStorage.setItem('chat_session_id', sessionId);
+                }
+                
+                return result;
+            } catch (error) {
+                console.error('Image message error:', error);
+                return { reply: '抱歉，服务暂时不可用，请稍后重试。', intent: '', detections: '' };
+            }
+        }
+
+        async function sendVoiceMessage(audioBlob, text = '') {
+            try {
+                const formData = new FormData();
+                formData.append('audio', audioBlob, 'audio.webm');
+                if (text) {
+                    formData.append('text', text);
+                }
+                formData.append('session_id', getSessionId());
+
+                console.log(`Sending audio blob: ${audioBlob.size} bytes`);
+                const result = await sendRequest(`${API_BASE}/api/chat/voice`, 'POST', formData);
+                
+                if (result.session_id) {
+                    sessionId = result.session_id;
+                    localStorage.setItem('chat_session_id', sessionId);
+                }
+                
+                return result;
+            } catch (error) {
+                console.error('Voice message error:', error);
+                return { reply: '抱歉，语音识别服务暂时不可用，请稍后重试。', intent: '', transcript: '' };
+            }
+        }
+
+        async function deleteSession() {
+            try {
+                const url = `${API_BASE}/api/session/delete?session_id=${encodeURIComponent(getSessionId())}`;
+                await sendRequest(url, 'DELETE');
+            } catch (error) {
+                console.error('Delete session error:', error);
+            }
+        }
+
+        btnSend.addEventListener('click', async () => {
+            const text = inputText.value.trim();
+            if (!text) return;
+            const useRag = document.getElementById('rag-switch').checked;   // 读取开关
+
+            addMessage(text, true);
+            inputText.value = '';
+            addTypingIndicator();
+
+            const result = await sendTextMessage(text, useRag);   // 传入 useRag
+            removeTypingIndicator();
+            addMessage(result.reply, false);
+        });
+
+        inputText.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                btnSend.click();
+            }
+        });
+
+        btnImage.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const imageUrl = URL.createObjectURL(file);
+            addMessage('', true, true, imageUrl);
+
+            if (inputText.value.trim()) {
+                addMessage(inputText.value.trim(), true);
+            }
+
+            addTypingIndicator();
+
+            const result = await sendImageMessage(file, inputText.value.trim());
+            inputText.value = '';
+
+            removeTypingIndicator();
+            let reply = result.reply;
+            if (result.detections) reply = `【检测】${result.detections}\n${reply}`;
+            addMessage(reply, false);
+
+            e.target.value = '';
+        });
+
+        btnVoice.addEventListener('click', async () => {
+            if (!isRecording) {
+                try {
+                    audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(audioStream, { mimeType: 'audio/webm' });
+                    audioChunks = [];
+
+                    mediaRecorder.ondataavailable = (event) => {
+                        if (event.data && event.data.size > 0) {
+                            audioChunks.push(event.data);
+                            console.log(`Added chunk: ${event.data.size} bytes, total: ${audioChunks.length}`);
+                        }
+                    };
+
+                    mediaRecorder.start(100);
+                    isRecording = true;
+                    btnVoice.classList.add('voice-recording');
+                    btnVoice.innerHTML = '⏹️';
+                    console.log('Recording started');
+
+                } catch (error) {
+                    console.error('录音失败:', error);
+                    alert('无法访问麦克风，请检查权限设置。');
+                }
+            } else {
+                mediaRecorder.stop();
+                isRecording = false;
+                btnVoice.classList.remove('voice-recording');
+                btnVoice.innerHTML = '🎤';
+                
+                if (audioStream) {
+                    audioStream.getTracks().forEach(track => track.stop());
+                    audioStream = null;
+                }
+
+                console.log(`Recording stopped, chunks: ${audioChunks.length}`);
+                
+                if (audioChunks.length === 0) {
+                    addMessage('⚠️ 录音时间太短，请重试', true);
+                    return;
+                }
+
+                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                console.log(`Created webm blob: ${audioBlob.size} bytes`);
+
+                // 转换为WAV格式
+                const wavBlob = await convertWebmToWav(audioBlob);
+                console.log(`Converted to WAV: ${wavBlob.size} bytes`);
+
+                addMessage('🎤 正在识别...', true);
+
+                addTypingIndicator();
+
+                console.log('Sending voice message...');
+                const result = await sendVoiceMessage(wavBlob, inputText.value.trim());
+                console.log('Voice result:', result);
+                inputText.value = '';
+
+                removeTypingIndicator();
+
+                // 显示语音转文字结果
+                if (result.transcript && result.transcript.trim()) {
+                    addMessage(`🎤 ${result.transcript}`, true);
+                } else if (result.transcript === '') {
+                    addMessage('⚠️ 未识别到语音内容', true);
+                }
+
+                addMessage(result.reply, false);
+            }
+        });
+
+        btnClear.addEventListener('click', () => {
+            confirmModal.classList.add('show');
+        });
+
+        btnCancel.addEventListener('click', () => {
+            confirmModal.classList.remove('show');
+        });
+
+        btnConfirm.addEventListener('click', async () => {
+            await deleteSession();
+            clearSession();
+            confirmModal.classList.remove('show');
+        });
+
+        // 页面加载时自动恢复会话历史
+        document.addEventListener('DOMContentLoaded', loadSessionHistory);
+    </script>
+</body>
+</html>
