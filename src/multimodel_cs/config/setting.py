@@ -16,7 +16,7 @@ class Settings(BaseModel):
     # 最大历史对话长度
     MAX_HISTORY_LENGTH:int = 10
     # 单次模型对话中传入的token数量
-    MAX_TOTAL_TOKENS = 10000
+    MAX_TOTAL_TOKENS:int = 10000
 
     # 项目基本配置
     BASE_DIR: Path = Path(__file__).parent.parent.parent.parent.resolve()
@@ -25,6 +25,8 @@ class Settings(BaseModel):
     KB_PATH: Path = BASE_DIR / "data/knowledge_base.json"
     # 本地向量模型地址
     EMBEDDING_MODEL_PATH: str = BASE_DIR / "models" / "bge_small_zh"
+    # 静态资源路径
+    STATIC_PATH:str = BASE_DIR / "static"
 
     # SiliconFlow配置
     SILICONFLOW_API_KEY: str = os.getenv("SILICONFLOW_API_KEY")
@@ -46,7 +48,10 @@ class Settings(BaseModel):
     LOG_FILE: Path = BASE_DIR / "app.log"
 
     #语音合成的参数 "中文女声 晓晓"
-    VOICE = "zh-CN-XiaoxiaoNeural"
+    VOICE:str = "zh-CN-XiaoxiaoNeural"
+
+    # 允许跨域访问链接
+    ALLOW_ORIGINS:list[str] = ["http://localhost:8080", "http://localhost:3000", "http://127.0.0.1:8080","http://localhost:63342"]
 
 
 

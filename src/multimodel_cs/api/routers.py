@@ -48,6 +48,7 @@ async def chat_text(text:str = Form(...), session_id:str = Form(None), use_rag:b
     # 获取或创建会话
     chat_history = get_or_create_session(session_id)
     # 如果启用该Rags
+    rag_context = ''
     if use_rag:
         # 初始化RAG
         rag = ProductRAG()
@@ -106,6 +107,15 @@ async def chat_voice(
     # 处理语音
     audio_bytes = await audio.read()
     print(f"接收到音频：{len(audio_bytes)} bytes")
+
+    # ==========调试：保存上传的音频到本地==========
+    import os
+    debug_audio_path = "debug_upload_audio.wav"
+    with open(debug_audio_path, "wb") as f:
+        f.write(audio_bytes)
+    print(f"已保存调试音频 → {os.path.abspath(debug_audio_path)}")
+    # ============================================
+
     transcript = speech_to_text(audio_bytes)
     print(f"识别结果：{transcript}")
     # 如果没有识别到语音内容
@@ -134,7 +144,7 @@ async def chat_voice(
     # 转语音
     tts_path = await text_to_speech(response["reply"])
     with open(tts_path,'rb') as f:
-        audio_base64 = base64.b64decode(f.read()).decode("utf-8")
+        audio_base64 = base64.b64encode(f.read()).decode("utf-8")
 
     os.remove(tts_path)
     # 保存对话记录

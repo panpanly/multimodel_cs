@@ -47,7 +47,7 @@ class ChatHistoryManage:
 
         # 2、再按tokens限制修剪
         # 简单估算，1 token 约等于4个字符
-        total_chars = sum(len(msg['content']) for msg in self.history)
+        total_chars = sum(len(msg.get('content','')) for msg in self.history)
         while total_chars > settings.MAX_TOTAL_TOKENS * 4 and len(self.history) > 2:
             removed = self.history.pop(0)
             total_chars -= len(removed["content"])

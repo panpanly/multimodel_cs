@@ -6,6 +6,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from src.multimodel_cs.api.routers import router
 from src.multimodel_cs.config.logging_config import setup_logging
+from src.multimodel_cs.config.setting import settings
+
+
 
 setup_logging()
 
@@ -19,14 +22,14 @@ app = FastAPI(
 # 配置中间键
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8080", "http://localhost:3000", "http://127.0.0.1:8080"],
+    allow_origins= settings.ALLOW_ORIGINS,
     allow_credentials=True, # 允许携带cookie
     allow_methods=["*"], # 允许所有HTTP方法
     allow_headers=["*"], # 允许所有HTTP头
 )
 
 # 挂载静态文件目录
-app.mount("/static", StaticFiles(directory="static"),name="static")
+app.mount("/static", StaticFiles(directory=settings.STATIC_PATH),name="static")
 
 # 包含API路由
 app.include_router(router)

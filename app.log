@@ -1,0 +1,50 @@
+2026-56-17 10:56:21 - root - INFO - 日志系统初始化完成, 级别是 INFO
+2026-06-17 11:06:50 - root - INFO - 日志系统初始化完成, 级别是 INFO
+2026-11-17 11:11:26 - root - INFO - 日志系统初始化完成, 级别是 INFO
+2026-13-17 11:13:48 - root - INFO - 日志系统初始化完成, 级别是 INFO
+2026-16-17 11:16:54 - root - INFO - 日志系统初始化完成, 级别是 INFO
+2026-22-17 11:22:29 - root - INFO - 日志系统初始化完成, 级别是 INFO
+2026-27-17 11:27:58 - root - INFO - 日志系统初始化完成, 级别是 INFO
+2026-00-17 12:00:05 - httpx2 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-17 12:02:01 - root - INFO - 日志系统初始化完成, 级别是 INFO
+2026-03-17 12:03:39 - root - INFO - 日志系统初始化完成, 级别是 INFO
+2026-08-17 12:08:02 - root - INFO - 日志系统初始化完成, 级别是 INFO
+2026-09-17 12:09:58 - httpx2 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-17 13:02:58 - root - INFO - 日志系统初始化完成, 级别是 INFO
+2026-04-17 13:04:35 - root - INFO - 日志系统初始化完成, 级别是 INFO
+2026-06-17 13:06:40 - root - INFO - 日志系统初始化完成, 级别是 INFO
+2026-09-17 13:09:07 - root - INFO - 日志系统初始化完成, 级别是 INFO
+2026-09-17 13:09:43 - httpx2 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-15-17 13:15:43 - httpx2 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-18-17 13:18:19 - root - INFO - 日志系统初始化完成, 级别是 INFO
+2026-19-17 13:19:20 - httpx2 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-22-17 13:22:55 - root - INFO - 日志系统初始化完成, 级别是 INFO
+2026-28-17 13:28:13 - root - INFO - 日志系统初始化完成, 级别是 INFO
+2026-33-17 13:33:24 - root - INFO - 日志系统初始化完成, 级别是 INFO
+2026-46-17 13:46:48 - root - INFO - 日志系统初始化完成, 级别是 INFO
+2026-51-17 13:51:56 - root - INFO - 日志系统初始化完成, 级别是 INFO
+2026-52-17 13:52:48 - httpx2 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-55-17 13:55:43 - root - INFO - 日志系统初始化完成, 级别是 INFO
+2026-57-17 13:57:25 - openai._base_client - INFO - Retrying request to /chat/completions in 0.472367 seconds
+2026-57-17 13:57:27 - httpx2 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-17 14:01:44 - root - INFO - 日志系统初始化完成, 级别是 INFO
+2026-02-17 14:02:32 - httpx2 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-17 14:04:46 - httpx2 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-08-17 14:08:50 - root - INFO - 日志系统初始化完成, 级别是 INFO
+2026-09-17 14:09:14 - httpx2 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-17 14:10:21 - httpx2 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 402 Payment Required"
+2026-10-17 14:10:23 - httpx2 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 402 Payment Required"
+2026-10-17 14:10:26 - httpx2 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 402 Payment Required"
+2026-11-17 14:11:49 - httpx2 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 402 Payment Required"
+2026-11-17 14:11:49 - src.multimodel_cs.modules.vlm - INFO - 图片解析出错：Error code: 402 - {'code': 30001, 'message': 'Sorry, your account balance is insufficient', 'data': None}
+2026-13-17 14:13:31 - httpx2 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 402 Payment Required"
+2026-13-17 14:13:38 - httpx2 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 402 Payment Required"
+2026-13-17 14:13:40 - httpx2 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 402 Payment Required"
+2026-15-17 14:15:16 - httpx2 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 402 Payment Required"
+2026-15-17 14:15:16 - src.multimodel_cs.modules.vlm - INFO - 图片解析出错：Error code: 402 - {'code': 30001, 'message': 'Sorry, your account balance is insufficient', 'data': None}
+2026-15-17 14:15:29 - httpx2 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 402 Payment Required"
+2026-15-17 14:15:31 - httpx2 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 402 Payment Required"
+2026-15-17 14:15:33 - httpx2 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 402 Payment Required"
+2026-17-17 14:17:54 - root - INFO - 日志系统初始化完成, 级别是 INFO
+2026-18-17 14:18:33 - httpx2 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-18-17 14:18:55 - httpx2 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"

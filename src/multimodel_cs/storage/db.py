@@ -44,10 +44,7 @@ def load_session_history(session_id):
     )
     history = cursor.fetchall()
     conn.close()
-    return [{
-        {"role":msg[0],"content":msg[1]}
-        for msg in history
-    }]
+    return [{"role": msg[0], "content": msg[1]} for msg in history]
 
 
 def save_chat(user_input:str,intent:str,reply:str):

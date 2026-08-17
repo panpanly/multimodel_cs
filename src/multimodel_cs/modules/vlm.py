@@ -28,7 +28,7 @@ def detect_defect_with_vlm(image,prompt:str = None):
         image = Image.fromarray(image)
     buf = io.BytesIO()
     image.save(buf,format='JPEG')
-    img_b64 = base64.b64decode(buf.getvalue()).decode('utf-8')
+    img_b64 = base64.b64encode(buf.getvalue()).decode('utf-8')
 
     if prompt is None:
         prompt = IMAGE_ANALYSIS_SYSTEM_PROMPT
